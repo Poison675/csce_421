@@ -65,9 +65,6 @@ def prepare_X(raw_X):
 	### YOUR CODE HERE
     X = np.array([bias, intensity_field, symmetry_field]).T
 	### END YOUR CODE
-    for i, x in enumerate(X):
-         X[i] = x/np.linalg.norm(x)
-         
     return X
 
 def prepare_y(raw_y):

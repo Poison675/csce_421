@@ -31,7 +31,7 @@ def visualize_features(X, y):
     plt.ylabel('Symmetry')
     plt.title('Scatterplot of Data Colored by Label')
 
-    # Show plot
+    # Save plot
     plt.savefig('scatterplot.png')
     plt.close()
     # For each pair (X[1, i], X[2, i]), it will be colored according to the label y[i].
@@ -39,7 +39,7 @@ def visualize_features(X, y):
 
     ### END YOUR CODE
 
-def visualize_results(X, y):
+def visualize_result(X, y, W):
     '''This function is used to plot a 2-D scatter plot of training features. 
 
     Args:
@@ -56,13 +56,15 @@ def visualize_results(X, y):
 	# the intensity of each sample, X[1] will be the symmetry of each sample.
     X = X.T
     scatter = plt.scatter(X[0], X[1], c=y, cmap='viridis', s=50, alpha=0.6)
+    b, w1, w2 = W
+    x2 = -(w1 * X[1] + b) / w2
+    plt.plot(X[1], x2, "b-")
 
     # Add labels and title
     plt.xlabel('Intensity')
     plt.ylabel('Symmetry')
     plt.title('Scatterplot of Data Colored by Label')
-
-    # Show plot
+    # Save plot
     plt.savefig('scatterplot.png')
     plt.close()
     # For each pair (X[1, i], X[2, i]), it will be colored according to the label y[i].
@@ -173,10 +175,10 @@ def main():
     ### END YOUR CODE
 
     # Visualize the your 'best' model after training.
-    visualize_result(train_X[:, 1:3], train_y, logisticR_classifier.get_params())
 
     ### YOUR CODE HERE
-
+    logisticR_classifier.fit_SGD(train_X, train_y)
+    visualize_result(train_X[:, 1:3], train_y, logisticR_classifier.get_params())
     ### END YOUR CODE
 
     # Use the 'best' model above to do testing. Note that the test data should be loaded and processed in the same way as the training data.
