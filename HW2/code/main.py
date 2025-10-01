@@ -39,21 +39,33 @@ def visualize_features(X, y):
 
     ### END YOUR CODE
 
-def visualize_result(X, y, W):
-	'''This function is used to plot the sigmoid model after training. 
+def visualize_results(X, y):
+    '''This function is used to plot a 2-D scatter plot of training features. 
 
-	Args:
-		X: An array of shape [n_samples, 2].
-		y: An array of shape [n_samples,]. Only contains 1 or -1.
-		W: An array of shape [n_features,].
-	
-	Returns:
-		No return. Save the plot to 'train_result_sigmoid.*' and include it
-		in submission.
-	'''
-	### YOUR CODE HERE
+    Args:
+        X: An array of shape [n_samples, 2].
+        y: An array of shape [n_samples,]. Only contains 1 or -1.
 
-	### END YOUR CODE
+    Returns:
+        No return. Save the plot to 'train_features.*' and include it
+        in submission.
+    '''
+    ### YOUR CODE HERE
+	# X shape: [n_samples, 2]
+	# Want to convert shape to hold two dimensions i can plot on a graph for each point. X[0] will be 
+	# the intensity of each sample, X[1] will be the symmetry of each sample.
+    X = X.T
+    scatter = plt.scatter(X[0], X[1], c=y, cmap='viridis', s=50, alpha=0.6)
+
+    # Add labels and title
+    plt.xlabel('Intensity')
+    plt.ylabel('Symmetry')
+    plt.title('Scatterplot of Data Colored by Label')
+
+    # Show plot
+    plt.savefig('scatterplot.png')
+    plt.close()
+    # For each pair (X[1, i], X[2, i]), it will be colored according to the label y[i].
 
 def visualize_result_multi(X, y, W):
 	'''This function is used to plot the softmax model after training. 
@@ -100,7 +112,7 @@ def main():
     data_shape = train_y.shape[0] 
 
     #    # Visualize training data.
-    visualize_features(train_X[:, 1:3], train_y)
+    # visualize_features(train_X[:, 1:3], train_y)
 
     # ------------Logistic Regression Sigmoid Case------------
 
@@ -110,18 +122,18 @@ def main():
     # THIS IS A PERFECT DEMONSTRATION OF MY MODEL WORKING FOR AN INDIVIDUAL EXAMPLE
 	# IT SHOWS THAT THE GRADIENT IS CORRECT.
 	
-    logisticR_classifier.assign_weights(np.array([1,1]))
-    testX = np.array([1, 1])
-    testY = -1
-    probs_pos = 1 / (1 + np.exp(-np.dot(logisticR_classifier.W, testX)))
-    print(probs_pos, 1- probs_pos)
-    grad = 0
-    for i in range(10):
-        grad = -logisticR_classifier._gradient(testX, testY)
-        logisticR_classifier.assign_weights(logisticR_classifier.W - grad)
-        print(grad)
-    probs_pos = 1 / (1 + np.exp(-np.dot(logisticR_classifier.W, testX)))
-    print(probs_pos, 1- probs_pos)
+    # logisticR_classifier.assign_weights(np.array([1,1,1]))
+    # testX = np.array([1, 1, 1])
+    # testY = 1
+    # probs_pos = 1 / (1 + np.exp(-np.dot(logisticR_classifier.W, testX)))
+    # print(f'{probs_pos:0.4f}, {1- probs_pos:0.4f}')
+    # grad = 0
+    # for i in range(10):
+    #     grad = -logisticR_classifier._gradient(testX, testY)
+    #     logisticR_classifier.assign_weights(logisticR_classifier.W - grad)
+    #     print(grad)
+    # probs_pos = 1 / (1 + np.exp(-np.dot(logisticR_classifier.W, testX)))
+    # print(f'{probs_pos:0.4f}, {1- probs_pos:0.4f}')
 	
     # logisticR_classifier.fit_BGD(train_X, train_y)
     # print(logisticR_classifier.get_params())
@@ -143,15 +155,25 @@ def main():
     # print(logisticR_classifier.get_params())
     # print(logisticR_classifier.score(train_X, train_y))
 
-
-
-    """# Explore different hyper-parameters.
+# Explore different hyper-parameters.
     ### YOUR CODE HERE
-
+    for learning_rate in (0.05, 0.1, 0.25, 0.5, 1, 2, 5, 10):
+        print(f'Learning rate = {learning_rate}\nTesting miniBGD with batch_size = 10')
+        logisticR_classifier.learning_rate = learning_rate
+        logisticR_classifier.fit_miniBGD(train_X, train_y, 10)
+        print(logisticR_classifier.get_params())
+        print(logisticR_classifier.score(train_X, train_y))
+        
+        print('Testing SGD')
+        logisticR_classifier.fit_SGD(train_X, train_y)
+        print(logisticR_classifier.get_params())
+        print(logisticR_classifier.score(train_X, train_y))
+        print('\n')
+		
     ### END YOUR CODE
 
     # Visualize the your 'best' model after training.
-    # visualize_result(train_X[:, 1:3], train_y, best_logisticR.get_params())
+    visualize_result(train_X[:, 1:3], train_y, logisticR_classifier.get_params())
 
     ### YOUR CODE HERE
 
@@ -163,7 +185,8 @@ def main():
     ### END YOUR CODE
 
 
-    # ------------Logistic Regression Multiple-class case, let k= 3------------
+   
+    """ # ------------Logistic Regression Multiple-class case, let k= 3------------
     ###### Use all data from '0' '1' '2' for training
     train_X = train_X_all
     train_y = train_y_all

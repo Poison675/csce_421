@@ -38,31 +38,26 @@ class logistic_regression(object):
             self: Returns an instance of self.
         """
 		### YOUR CODE HERE
-        self.assign_weights(np.zeros(3))
-
+        weights = np.random.randn(3)
+        self.assign_weights(weights)
         
-        for epoch in range(5):
-            np.random.seed(42)
-            np.random.shuffle(X) # Randomizes the order of the inputs.
-            np.random.shuffle(y) # Randomizes the order of the outputs in the same way as the inputs.
+        for epoch in range(1):
+            indices = np.random.permutation(len(X))
+            X = X[indices]
+            y = y[indices]
 
             for i in range(0, len(X), batch_size):
                 batch_x = X[i : i + batch_size]
                 batch_y = y[i : i + batch_size]
                 # This has selected a batch or a slice of the inputs from i to i + batch_size
                 gradient = 0
-                # if i == 0:
-                #     print(batch_x)
-                #     print(batch_y)
                 for input, output in zip(batch_x, batch_y):
                     gradient += self._gradient(input, output)
                 
                 # Find the average gradient of the batch
-                gradient /= -batch_size
+                gradient /= batch_size
                 # Update
-                self.W += -self.learning_rate * gradient / np.linalg.norm(gradient)
-            print(f'{np.dot(gradient, gradient)*100:0.2f}')
-
+                self.W += -self.learning_rate * gradient
 
 		### END YOUR CODE
         return self
@@ -78,20 +73,16 @@ class logistic_regression(object):
             self: Returns an instance of self.
         """
 		### YOUR CODE HERE
-        self.assign_weights(np.zeros(3))
-        for epoch in range(10):
-            np.random.seed(42)
-            np.random.shuffle(X) # Randomizes the order of the inputs.
-            np.random.shuffle(y) # Randomizes the order of the outputs in the same way as the inputs.
+        weights = np.random.randn(3)
+        self.assign_weights(weights)
+        for epoch in range(1):
+            indices = np.random.permutation(len(X))
+            X = X[indices]
+            y = y[indices]
 
-            gradient = 0
             for input, output in zip(X, y):
-                # Find the gradient of each input WRT weights and subtract a fraction of it from the weights.
-                gradient = -self._gradient(input, output)
-                self.W += -self.learning_rate * gradient / np.linalg.norm(gradient)
-            
-            print(f'{np.dot(gradient, gradient)*100:0.2f}')
-        
+                # Find the grad of each input WRT weights and subtract a fraction of it from the weights.
+                self.W += -self.learning_rate * self._gradient(input, output) 
 
 		### END YOUR CODE
         return self
@@ -109,8 +100,9 @@ class logistic_regression(object):
                 cross-entropy with respect to self.W.
         """
 		### YOUR CODE HERE
-        ex = np.exp(-_y * self.W.T * _x)
-        return (ex / (1 + ex)) * _y * _x
+        # THIS SIMPLIFIES TO SIGMOID(y * W.T * X) * y * X
+        ex = np.exp(-_y * np.dot(self.W, _x))
+        return -(ex / (1 + ex)) * _y * _x
 		### END YOUR CODE
 
     def get_params(self):
@@ -157,14 +149,14 @@ class logistic_regression(object):
         """
 		### YOUR CODE HERE
         # My version:
-        preds = np.zeros(shape=(len(X),))
-        for i, input in enumerate(X):
-            preds[i] = 1 if (np.dot(input, self.W) > 0) else -1
+        # preds = np.zeros(shape=(len(X),))
+        # for i, input in enumerate(X):
+        #     preds[i] = 1 if (np.dot(input, self.W) > 0) else -1
 
-        return preds
+        # return preds
         
         # Using copilot to make it more pretty and concise. This is me giving credit where it is due.
-        # return np.where(np.dot(X, self.W) > 0, 1, -1)
+        return np.where(np.dot(X, self.W) > 0, 1, -1)
 
 		### END YOUR CODE
 
