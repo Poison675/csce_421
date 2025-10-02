@@ -144,33 +144,33 @@ def main():
 
 # Explore different hyper-parameters.
     ### YOUR CODE HERE
-    for learning_rate in (0.05, 0.1, 0.25, 0.5, 1, 2, 5, 10):
-        print(f'Learning rate = {learning_rate}\nTesting miniBGD with batch_size = 100')
-        logisticR_classifier.learning_rate = learning_rate
-        logisticR_classifier.fit_miniBGD(train_X, train_y, 100)
-        print(logisticR_classifier.get_params())
-        print(logisticR_classifier.score(train_X, train_y))
+    # for learning_rate in (0.05, 0.1, 0.25, 0.5, 1, 2, 5, 10):
+    #     print(f'Learning rate = {learning_rate}\nTesting miniBGD with batch_size = 100')
+    #     logisticR_classifier.learning_rate = learning_rate
+    #     logisticR_classifier.fit_miniBGD(train_X, train_y, 100)
+    #     print(logisticR_classifier.get_params())
+    #     print(logisticR_classifier.score(train_X, train_y))
         
-        print('Testing SGD')
-        logisticR_classifier.fit_SGD(train_X, train_y)
-        print(logisticR_classifier.get_params())
-        print(logisticR_classifier.score(train_X, train_y))
-        print('\n')
+    #     print('Testing SGD')
+    #     logisticR_classifier.fit_SGD(train_X, train_y)
+    #     print(logisticR_classifier.get_params())
+    #     print(logisticR_classifier.score(train_X, train_y))
+    #     print('\n')
 		
-    ### END YOUR CODE
+    # ### END YOUR CODE
 
-    # Visualize the your 'best' model after training.
+    # # Visualize the your 'best' model after training.
 
-    ### YOUR CODE HERE
-    logisticR_classifier.learning_rate = 2
-    logisticR_classifier.fit_miniBGD(train_X, train_y, 100)
-    visualize_result(train_X[:, 1:3], train_y, logisticR_classifier.get_params())
-    ### END YOUR CODE
+    # ### YOUR CODE HERE
+    # logisticR_classifier.learning_rate = 2
+    # logisticR_classifier.fit_miniBGD(train_X, train_y, 100)
+    # visualize_result(train_X[:, 1:3], train_y, logisticR_classifier.get_params())
+    # ### END YOUR CODE
 
-    # Use the 'best' model above to do testing. Note that the test data should be loaded and processed in the same way as the training data.
-    ### YOUR CODE HERE
-    print(logisticR_classifier.score(valid_X, valid_y))
-    visualize_result(valid_X[:, 1:3], valid_y, logisticR_classifier.get_params())
+    # # Use the 'best' model above to do testing. Note that the test data should be loaded and processed in the same way as the training data.
+    # ### YOUR CODE HERE
+    # print(logisticR_classifier.score(valid_X, valid_y))
+    # visualize_result(valid_X[:, 1:3], valid_y, logisticR_classifier.get_params())
     ### END YOUR CODE
 
 
@@ -183,14 +183,14 @@ def main():
     valid_y = valid_y_all
 
     #########  miniBGD for multiclass Logistic Regression
-    logisticR_classifier_multiclass = logistic_regression_multiclass(learning_rate=0.5, max_iter=100,  k= 3)
+    logisticR_classifier_multiclass = logistic_regression_multiclass(learning_rate=0.5, max_iter=100, k=3)
     logisticR_classifier_multiclass.fit_miniBGD(train_X, train_y, 10)
     print(logisticR_classifier_multiclass.get_params())
     print(logisticR_classifier_multiclass.score(train_X, train_y))
 
     # Explore different hyper-parameters.
     ### YOUR CODE HERE
-    
+
     ### END YOUR CODE
 
     # Visualize the your 'best' model after training.

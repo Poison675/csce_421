@@ -3,13 +3,13 @@
 """
 Created on Fri Sep  6 12:00:48 2019
 
-@author: 
+@author: Aidan Veselka in part
 """
 
 import numpy as np
 import sys
 
-"""This script implements a two-class logistic regression model.
+"""This script implements a multi-class logistic regression model.
 """
 
 class logistic_regression_multiclass(object):
@@ -34,7 +34,7 @@ class logistic_regression_multiclass(object):
         """
 
 		### YOUR CODE HERE
-        self.asweights= np.random.randn(3, len(X[0]))
+        self.assign_weights(np.random.randn(3, len(X[0])))
         # My uncreative version:
         # y = np.zeros(shape=(labels, np.max(labels)))
         # for ind, output, label in enumerate(zip(y, labels)):
@@ -42,7 +42,8 @@ class logistic_regression_multiclass(object):
         #     y[ind] = output
 
         # By god this is a pretty way of making a list of indexes one-hot. Credit to google.
-        y = np.eye(3)[labels]
+        labels = np.array(labels)
+        y = np.eye(self.k)[labels.astype(int)]
 
         # Shuffling both x and y into a permutation of their indexes.
         perm = np.random.permutation(len(X))
@@ -122,7 +123,8 @@ class logistic_regression_multiclass(object):
             preds: An array of shape [n_samples,]. Only contains 0,..,k-1.
         """
 		### YOUR CODE HERE
-        return self.softmax((self.W.T @ x) for x in X)
+        probs = np.array(self.softmax(prob) for prob in X)
+        return np.argmax(probs, axis=1)
 		### END YOUR CODE
 
 
@@ -138,7 +140,12 @@ class logistic_regression_multiclass(object):
         """
 		### YOUR CODE HERE
         logits = self.predict(X)
-        y = np.eye(3)[labels]
+        y = np.eye(self.k)[labels]
         return np.sum(np.where((logits == y), 1, 0)) / len(logits)
 		### END YOUR CODE
+    
+    
+    def assign_weights(self, weights):
+        self.W = weights
+        return self
 
