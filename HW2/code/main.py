@@ -175,7 +175,7 @@ def main():
 
 
    
-    """ # ------------Logistic Regression Multiple-class case, let k= 3------------
+    # ------------Logistic Regression Multiple-class case, let k= 3------------
     ###### Use all data from '0' '1' '2' for training
     train_X = train_X_all
     train_y = train_y_all
@@ -190,7 +190,7 @@ def main():
 
     # Explore different hyper-parameters.
     ### YOUR CODE HERE
-
+    
     ### END YOUR CODE
 
     # Visualize the your 'best' model after training.
@@ -202,7 +202,7 @@ def main():
 
     ### END YOUR CODE
 
-
+    """
     # ------------Connection between sigmoid and softmax------------
     ############ Now set k=2, only use data from '1' and '2' 
 
