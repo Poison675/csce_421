@@ -110,6 +110,7 @@ def main():
     ####### set lables to  1 and -1. Here convert label '2' to '-1' which means we treat data '1' as postitive class. 
     ### YOUR CODE HERE
     train_y[np.where(train_y==2)] = -1
+    valid_y[np.where(valid_y==2)] = -1
     ### END YOUR CODE
     data_shape = train_y.shape[0] 
 
@@ -120,22 +121,6 @@ def main():
 
     ##### Check BGD, SGD, miniBGD
     logisticR_classifier = logistic_regression(learning_rate=0.5, max_iter=100)
-	
-    # THIS IS A PERFECT DEMONSTRATION OF MY MODEL WORKING FOR AN INDIVIDUAL EXAMPLE
-	# IT SHOWS THAT THE GRADIENT IS CORRECT.
-	
-    # logisticR_classifier.assign_weights(np.array([1,1,1]))
-    # testX = np.array([1, 1, 1])
-    # testY = 1
-    # probs_pos = 1 / (1 + np.exp(-np.dot(logisticR_classifier.W, testX)))
-    # print(f'{probs_pos:0.4f}, {1- probs_pos:0.4f}')
-    # grad = 0
-    # for i in range(10):
-    #     grad = -logisticR_classifier._gradient(testX, testY)
-    #     logisticR_classifier.assign_weights(logisticR_classifier.W - grad)
-    #     print(grad)
-    # probs_pos = 1 / (1 + np.exp(-np.dot(logisticR_classifier.W, testX)))
-    # print(f'{probs_pos:0.4f}, {1- probs_pos:0.4f}')
 	
     # logisticR_classifier.fit_BGD(train_X, train_y)
     # print(logisticR_classifier.get_params())
@@ -160,9 +145,9 @@ def main():
 # Explore different hyper-parameters.
     ### YOUR CODE HERE
     for learning_rate in (0.05, 0.1, 0.25, 0.5, 1, 2, 5, 10):
-        print(f'Learning rate = {learning_rate}\nTesting miniBGD with batch_size = 10')
+        print(f'Learning rate = {learning_rate}\nTesting miniBGD with batch_size = 100')
         logisticR_classifier.learning_rate = learning_rate
-        logisticR_classifier.fit_miniBGD(train_X, train_y, 10)
+        logisticR_classifier.fit_miniBGD(train_X, train_y, 100)
         print(logisticR_classifier.get_params())
         print(logisticR_classifier.score(train_X, train_y))
         
@@ -177,13 +162,15 @@ def main():
     # Visualize the your 'best' model after training.
 
     ### YOUR CODE HERE
-    logisticR_classifier.fit_SGD(train_X, train_y)
+    logisticR_classifier.learning_rate = 2
+    logisticR_classifier.fit_miniBGD(train_X, train_y, 100)
     visualize_result(train_X[:, 1:3], train_y, logisticR_classifier.get_params())
     ### END YOUR CODE
 
     # Use the 'best' model above to do testing. Note that the test data should be loaded and processed in the same way as the training data.
     ### YOUR CODE HERE
-
+    print(logisticR_classifier.score(valid_X, valid_y))
+    visualize_result(valid_X[:, 1:3], valid_y, logisticR_classifier.get_params())
     ### END YOUR CODE
 
 
