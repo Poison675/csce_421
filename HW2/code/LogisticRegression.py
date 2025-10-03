@@ -41,7 +41,7 @@ class logistic_regression(object):
         weights = np.random.randn(3)
         self.assign_weights(weights)
         
-        for epoch in range(5):
+        for epoch in range(self.max_iter):
             indices = np.random.permutation(len(X))
             X = X[indices]
             y = y[indices]
@@ -75,7 +75,7 @@ class logistic_regression(object):
 		### YOUR CODE HERE
         weights = np.random.randn(3)
         self.assign_weights(weights)
-        for epoch in range(5):
+        for epoch in range(self.max_iter):
             indices = np.random.permutation(len(X))
             X = X[indices]
             y = y[indices]

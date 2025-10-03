@@ -34,14 +34,8 @@ class logistic_regression_multiclass(object):
         """
 
 		### YOUR CODE HERE
-        self.assign_weights(np.random.randn(3, len(X[0])))
-        # My uncreative version:
-        # y = np.zeros(shape=(labels, np.max(labels)))
-        # for ind, output, label in enumerate(zip(y, labels)):
-        #     output[label] = 1
-        #     y[ind] = output
+        self.assign_weights(np.random.randn(len(X[0]), self.k))
 
-        # By god this is a pretty way of making a list of indexes one-hot. Credit to google.
         labels = np.array(labels)
         y = np.eye(self.k)[labels.astype(int)]
 
@@ -50,7 +44,7 @@ class logistic_regression_multiclass(object):
         X = X[perm]
         y = y[perm]
         # For as many epochs as I wish
-        for epoch in range(1):
+        for epoch in range(self.max_iter):
             # Split the shuffled inputs/outputs and split them into even sizes
             # calculate the gradient for each pair, add them up, divide by number
             # of inputs to get the average gradient. Subtract from weights at a 
@@ -59,16 +53,16 @@ class logistic_regression_multiclass(object):
                 batch_X = X[batch : batch + batch_size]
                 batch_y = y[batch : batch + batch_size]
 
-                gradient = 0
+                gradient = np.zeros_like(self.W)
                 for input, output in zip(batch_X, batch_y):
                     gradient += self._gradient(input, output)
 
-                gradient /= batch
+                gradient /= len(batch_X)
 
                 self.W += -self.learning_rate * gradient
 
         return self
-		### END YOUR CODE
+        ### END YOUR CODE
     
 
     def _gradient(self, _x, _y):
@@ -80,25 +74,25 @@ class logistic_regression_multiclass(object):
             _y: One_hot vector. 
 
         Returns:
-            _g: An array of shape [n_features,]. The gradient of
+            _g: An array of shape [n_features, k_classes]. The gradient of
                 cross-entropy with respect to self.W.
         """
-		### YOUR CODE HERE
+        ### YOUR CODE HERE
         logits = self.softmax(self.W.T @ _x)
-        return logits - _y
+        # Reshape _x to column vector for outer product
+        grad = np.outer(_x, (logits - _y))
+        return grad
+        ### END YOUR CODE
 
-		### END YOUR CODE
-    
     def softmax(self, x):
         """Compute softmax values for each sets of scores in x."""
         ### You must implement softmax by youself, otherwise you will not get credits for this part.
 
-		### YOUR CODE HERE
-        # Uh. Idk what it means "by yourself" but this is the calculation based off the slide 5/16 T06-softmax-slides.
-        # To clarify, I did come up with this myself. Although i cant imagine many peoples ideas will be that much
-        # different than mine?
-        return np.exp(x) / np.sum(np.exp(x))
-
+        ### YOUR CODE HERE
+        # Numerically stable softmax
+        x = x - np.max(x)
+        exp_x = np.exp(x)
+        return exp_x / np.sum(exp_x)
 		### END YOUR CODE
     
     def get_params(self):
@@ -122,11 +116,13 @@ class logistic_regression_multiclass(object):
         Returns:
             preds: An array of shape [n_samples,]. Only contains 0,..,k-1.
         """
-		### YOUR CODE HERE
-        probs = np.array(self.softmax(prob) for prob in X)
-        return np.argmax(probs, axis=1)
-		### END YOUR CODE
+        ### YOUR CODE HERE
 
+        logits = X @ self.W  # shape: [n_samples, k]
+        probs = np.apply_along_axis(self.softmax, 1, logits)
+        return np.argmax(probs, axis=1)
+    
+        ### END YOUR CODE
 
     def score(self, X, labels):
         """Returns the mean accuracy on the given test data and labels.
@@ -138,10 +134,9 @@ class logistic_regression_multiclass(object):
         Returns:
             score: An float. Mean accuracy of self.predict(X) wrt. labels.
         """
-		### YOUR CODE HERE
-        logits = self.predict(X)
-        y = np.eye(self.k)[labels]
-        return np.sum(np.where((logits == y), 1, 0)) / len(logits)
+        ### YOUR CODE HERE
+        preds = self.predict(X)
+        return np.mean(preds == labels)
 		### END YOUR CODE
     
     
